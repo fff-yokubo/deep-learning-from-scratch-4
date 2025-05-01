@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from bandit import Bandit, Agent
+import seaborn as sns
+sns.set_theme(context="notebook", style="darkgrid")
 
 
-runs = 200
-steps = 1000
-epsilon = 0.1
+runs = 100
+steps = 24000
+epsilon = 0.01
 all_rates = np.zeros((runs, steps))  # (2000, 1000)
 
 for run in range(runs):

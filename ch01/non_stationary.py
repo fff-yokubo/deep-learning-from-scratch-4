@@ -2,6 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from bandit import Agent
 
+import seaborn as sns
+sns.set_theme(context="notebook", style="darkgrid")
+
+
 
 class NonStatBandit:
     def __init__(self, arms=10):
