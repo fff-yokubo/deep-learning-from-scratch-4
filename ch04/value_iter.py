@@ -48,6 +48,5 @@ if __name__ == '__main__':
     gamma = 0.9
 
     V = value_iter(V, env, gamma)
-
     pi = greedy_policy(V, env, gamma)
     env.render_v(V, pi)

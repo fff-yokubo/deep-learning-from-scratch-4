@@ -43,13 +43,22 @@ class GridWorld:
                 yield (h, w)
 
     def next_state(self, state, action):
+
+        '''
+        Action, StateをInputに次のStatusを返す
+        '''
+
+
+        #Up, Down, Left, Right
         action_move_map = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         move = action_move_map[action]
         next_state = (state[0] + move[0], state[1] + move[1])
         ny, nx = next_state
 
+        #Gridをはみ出る場合
         if nx < 0 or nx >= self.width or ny < 0 or ny >= self.height:
             next_state = state
+        #移動後の座標が壁の場合→状態遷移させない
         elif next_state == self.wall_state:
             next_state = state
 
@@ -63,9 +72,16 @@ class GridWorld:
         return self.agent_state
 
     def step(self, action):
+        
+        #Agentの状態を取り出して、Stateに代入
         state = self.agent_state
+        #Actionに基づき次のStateを取得
         next_state = self.next_state(state, action)
+
+        #報酬を獲得
         reward = self.reward(state, action, next_state)
+
+        #ゴール到達判定
         done = (next_state == self.goal_state)
 
         self.agent_state = next_state

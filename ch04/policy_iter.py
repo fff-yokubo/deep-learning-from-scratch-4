@@ -20,28 +20,47 @@ def greedy_policy(V, env, gamma):
     pi = {}
 
     for state in env.states():
+
         action_values = {}
 
+        #とりうる行動について繰り返し
         for action in env.actions():
+            #状態state, 行動actionを前提に次にとりうる状態を抽出
             next_state = env.next_state(state, action)
+
+            #状態, 行動, 次の状態を前提に報酬を取得
+            #実際には、次の状態のみで報酬が決まる
             r = env.reward(state, action, next_state)
             value = r + gamma * V[next_state]
             action_values[action] = value
 
-        max_action = argmax(action_values)
-        action_probs = {0: 0, 1: 0, 2: 0, 3: 0}
-        action_probs[max_action] = 1.0
+        #報酬が最もよくなるactionを取得, max_action
+        opt_action = argmax(action_values)
+
+        #報酬のもっともよいactionの確率を1, 他をゼロに設定
+        action_probs = {
+            act: 1 if act == opt_action else 0
+            for act in env.actions() 
+        }
+        #方策を更新
         pi[state] = action_probs
+
     return pi
+
+import pprint as pp
 
 
 def policy_iter(env, gamma, threshold=0.001, is_render=True):
+
     pi = defaultdict(lambda: {0: 0.25, 1: 0.25, 2: 0.25, 3: 0.25})
     V = defaultdict(lambda: 0)
 
+    cnt = 0
     while True:
         V = policy_eval(pi, V, env, gamma, threshold)
         new_pi = greedy_policy(V, env, gamma)
+
+        pp.pprint(pi)
 
         if is_render:
             env.render_v(V, pi)
@@ -50,10 +69,18 @@ def policy_iter(env, gamma, threshold=0.001, is_render=True):
             break
         pi = new_pi
 
-    return pi
+        cnt+= 1
+
+        print("\n#############\n")
+
+    env.render_v(V, pi)
+
+    return pi, cnt
 
 
 if __name__ == '__main__':
     env = GridWorld()
     gamma = 0.9
-    pi = policy_iter(env, gamma)
+    pi, cnt = policy_iter(env, gamma, is_render = False)
+
+    print(f"Counts: {cnt}")

@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+import seaborn as sns
+sns.set()
 
 class Renderer:
     def __init__(self, reward_map, goal_state, wall_state):

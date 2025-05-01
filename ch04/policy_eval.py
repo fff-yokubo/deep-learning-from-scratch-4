@@ -6,6 +6,12 @@ from common.gridworld import GridWorld
 
 
 def eval_onestep(pi, V, env, gamma=0.9):
+    '''
+    反復方策評価
+    1Step分
+    '''
+
+    #State: グリッドのマス目について繰り返し
     for state in env.states():
         if state == env.goal_state:
             V[state] = 0
@@ -21,19 +27,32 @@ def eval_onestep(pi, V, env, gamma=0.9):
     return V
 
 
-def policy_eval(pi, V, env, gamma, threshold=0.001):
+def policy_eval(
+        pi,#方策
+        V,#価値関数
+        env,#環境
+        gamma,#割引率
+        threshold=0.00001
+    ):
     while True:
+
+        #更新前の価値観数
         old_V = V.copy()
+        #反復方策評価(1Step)
         V = eval_onestep(pi, V, env, gamma)
+
+        #収束判定
+        #状態価値関数Vの値の変化量の最大値がStep前後で閾値以下となった場合に終了する
 
         delta = 0
         for state in V.keys():
             t = abs(V[state] - old_V[state])
             if delta < t:
                 delta = t
-
+        #変化量最大値が閾値以下→break
         if delta < threshold:
             break
+
     return V
 
 
@@ -47,3 +66,4 @@ if __name__ == '__main__':
     V = policy_eval(pi, V, env, gamma)
     env.render_v(V, pi)
 
+    
